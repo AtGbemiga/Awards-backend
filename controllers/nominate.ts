@@ -21,6 +21,7 @@ export const createNomination: express.RequestHandler = async (
     phone_number,
     contact_you,
     join_newsletter: rawJoinNewsletter,
+    user_id,
   } = req.body;
 
   let join_newsletter: string;
@@ -31,6 +32,9 @@ export const createNomination: express.RequestHandler = async (
     join_newsletter = rawJoinNewsletter;
   }
 
+  if (!user_id) {
+    return res.status(400).json({ error: "Missing user_id" });
+  }
   // check if the body contains award_name, hero_name, award_reason, hero_contact, your_name, your_email, phone_number, contact_you, join_newsletter
   if (
     !award_name ||
@@ -59,6 +63,7 @@ export const createNomination: express.RequestHandler = async (
       phone_number,
       contact_you,
       join_newsletter,
+      user_id,
     },
     (err, result) => {
       if (err) {

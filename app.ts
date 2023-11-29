@@ -22,11 +22,15 @@ app.use(express.urlencoded({ extended: true }));
 import postsRouter from "./routes/post";
 import commentsRouter from "./routes/comments";
 import nominateRouter from "./routes/nominate";
+import shortVideosRouter from "./routes/shortVideos";
+import userRouter from "./routes/user";
 
 // create paths and use the imported routes
 app.use("/api/v1/posts", postsRouter);
 app.use("/api/v1/comments", commentsRouter);
 app.use("/api/v1/nominate", nominateRouter);
+app.use("/api/v1/shortVideos", shortVideosRouter);
+app.use("/api/v1/users", userRouter);
 
 // start the server
 app.listen(process.env.PORT, () => {

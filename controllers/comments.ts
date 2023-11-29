@@ -9,7 +9,7 @@ export const createComment: express.RequestHandler = async (
   res: Response
 ) => {
   // get post id from the params
-  const post_id = Number(req.query.postId);
+  const post_id = Number(req.query.post_id);
 
   // get the relevant data
   const { name, email, statement } = req.body;

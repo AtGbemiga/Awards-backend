@@ -84,7 +84,7 @@ export const getAllPostsWithTotalCommentNumber: express.RequestHandler = async (
   res: Response
 ) => {
   connection.query(
-    "SELECT posts.id, posts.name, posts.picture, posts.sub_heading, posts.year, posts.post, COUNT(comments.id) AS total_comments FROM posts LEFT JOIN comments ON posts.id = comments.post_id WHERE tag <> 'past hero' GROUP BY posts.id",
+    "SELECT posts.id, posts.name, posts.picture, posts.sub_heading, posts.year, posts.post, COUNT(comments.id) AS total_comments FROM posts LEFT JOIN comments ON posts.id = comments.post_id WHERE tag <> 'past hero' GROUP BY posts.id ORDER BY id DESC",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -104,7 +104,7 @@ export const getPostsByYear: express.RequestHandler = async (
 ) => {
   const year = req.query.year;
   connection.query(
-    "SELECT posts.id, posts.name, posts.picture, posts.sub_heading, posts.year, posts.post, COUNT(comments.id) AS total_comments FROM posts LEFT JOIN comments ON posts.id = comments.post_id WHERE year = ? AND tag <> 'past hero'",
+    "SELECT posts.id, posts.name, posts.picture, posts.sub_heading, posts.year, posts.post, COUNT(comments.id) AS total_comments FROM posts LEFT JOIN comments ON posts.id = comments.post_id WHERE year = ? AND tag <> 'past hero' ORDER BY id DESC",
     [year],
     (err, result) => {
       if (err) {
