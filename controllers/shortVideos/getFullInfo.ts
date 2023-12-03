@@ -8,8 +8,9 @@ export const getFullInfo: express.RequestHandler = async (
 ) => {
   // get the id from the query
   const video_id = Number(req.query.video_id);
+
   connection.query(
-    "SELECT id, video, detail, creator, likes, views FROM short_videos ORDER BY id = ? DESC, id",
+    "SELECT short_videos_id, video, detail, creator, likes, views, created_at, TIMESTAMPDIFF(YEAR, created_at, NOW()) AS years_ago, TIMESTAMPDIFF(MONTH, created_at, NOW()) AS months_ago, TIMESTAMPDIFF(DAY, created_at, NOW()) AS days_ago, TIMESTAMPDIFF(HOUR, created_at, NOW()) AS hours_ago, TIMESTAMPDIFF(MINUTE, created_at, NOW()) AS minutes_ago, TIMESTAMPDIFF(SECOND, created_at, NOW()) AS seconds_ago FROM short_videos ORDER BY short_videos_id = 3 DESC, short_videos_id",
     [video_id],
     (err, result) => {
       if (err) {

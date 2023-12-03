@@ -3,7 +3,7 @@ import { Router } from "express";
 const router = Router();
 
 // import the necessary functions from comments controller
-import { createComment } from "../controllers/comments";
+import { createComment } from "../controllers/postComments";
 
 // route path and function
 router.post("/", createComment);

@@ -4,13 +4,25 @@ import connection from "../db/db";
 // for sending files as form data
 import { upload } from "../multer/multer";
 import cloudinary from "../cloudinary/cloudinary";
+import jwt from "jsonwebtoken";
 
 export const createNomination: express.RequestHandler = async (
   req: Request,
   res: Response
 ) => {
-  // get the relevant data from req.body
+  // get the token from the request
+  const token = req.headers.authorization?.split(" ")[1];
 
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as {
+    user_id: string;
+  };
+
+  const user_id = decodedToken.user_id;
+  // get the relevant data from req.body
   const {
     award_name,
     hero_name,
@@ -21,7 +33,6 @@ export const createNomination: express.RequestHandler = async (
     phone_number,
     contact_you,
     join_newsletter: rawJoinNewsletter,
-    user_id,
   } = req.body;
 
   let join_newsletter: string;
@@ -136,6 +147,7 @@ export const createShowcasedNominationsOnTheNominationPage = async (
       (err, result) => {
         if (err) {
           console.log(err);
+          res.status(500).json({ err });
         }
         res.status(200).json({ message: result });
       }

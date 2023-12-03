@@ -11,9 +11,15 @@ export const createUser: express.RequestHandler = (
     username,
     email,
     password,
-  }: { username: string; email: string; password: string } = req.body;
+    users_phone_number,
+  }: {
+    username: string;
+    email: string;
+    password: string;
+    users_phone_number: string;
+  } = req.body;
 
-  if (!username || !email || !password) {
+  if (!username || !email || !password || !users_phone_number) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -58,15 +64,19 @@ export const createUser: express.RequestHandler = (
 
           // insert user into database
           connection.query(
-            "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-            [username, email, hash],
+            "INSERT INTO users (username, email, password, users_phone_number) VALUES (?, ?, ?, ?)",
+            [username, email, hash, users_phone_number],
             (err, result) => {
               if (err) {
                 console.log(err);
                 return res.status(500).json({ error: "Internal server error" });
               } else {
-                const userId = result.insertId;
-                const token = jwtGenerateToken(userId);
+                const user_id = result.insertId;
+                const token = jwtGenerateToken(user_id);
+
+                console.log(result.insertId);
+
+                // const userExactId = result[0].user_id;
 
                 res.cookie("token", token, {
                   httpOnly: true,
@@ -76,9 +86,10 @@ export const createUser: express.RequestHandler = (
                 });
 
                 // remove cookie from body res. res.cookie is enough
-                res
-                  .status(200)
-                  .json({ message: "User created successfully", token });
+                res.status(200).json({
+                  message: "User created successfully",
+                  token,
+                });
               }
             }
           );

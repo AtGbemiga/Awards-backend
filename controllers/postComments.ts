@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import connection from "../db/db";
+import jwt from "jsonwebtoken";
 
 // create comment
 
@@ -10,6 +11,19 @@ export const createComment: express.RequestHandler = async (
 ) => {
   // get post id from the params
   const post_id = Number(req.query.post_id);
+
+  // get the token from the request
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as {
+    user_id: string;
+  };
+
+  const user_id = decodedToken.user_id;
 
   // get the relevant data
   const { name, email, statement } = req.body;
@@ -45,13 +59,18 @@ export const createComment: express.RequestHandler = async (
     name,
     email,
     statement,
+    user_id,
   };
 
-  connection.query("INSERT INTO comments SET ?", comment, (err, result) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ error: "Failed to add comment" });
+  connection.query(
+    "INSERT INTO post_comments SET ?",
+    comment,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Failed to add comment" });
+      }
+      res.status(200).json({ message: "Comment added successfully", result });
     }
-    res.status(200).json({ message: "Comment added successfully" });
-  });
+  );
 };

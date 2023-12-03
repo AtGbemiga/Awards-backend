@@ -9,7 +9,7 @@ export const decreaseLikesCount: express.RequestHandler = async (
   // get the id from the query
   const video_id = Number(req.query.video_id);
   connection.query(
-    "UPDATE short_videos SET likes = COALESCE(likes, 0) - 1 WHERE id = ?",
+    "UPDATE short_videos SET likes = COALESCE(likes, 0) - 1 WHERE short_videos_id = ?",
     [video_id],
     (err, result) => {
       if (err) {
